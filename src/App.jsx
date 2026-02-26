@@ -1,8 +1,23 @@
+import { Routes, Route } from "react-router-dom"
+import Login from "./pages/Login"
+import Formulario from "./pages/Formulario"
+import Dashboard from "./pages/Dashboard"
+import ProtectedRoute from "./components/ProtectedRoute"
+
 function App() {
   return (
-    <div>
-      <h1>SAVIARE IPO funcionando 🚀</h1>
-    </div>
+    <Routes>
+      <Route path="/" element={<Formulario />} />
+      <Route path="/login" element={<Login />} />
+      <Route
+        path="/dashboard"
+        element={
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        }
+      />
+    </Routes>
   )
 }
 

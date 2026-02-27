@@ -18,7 +18,10 @@ function Dashboard() {
     total: 0,
     pendientes: 0,
     enRevision: 0,
-    cerrados: 0
+    cerrados: 0,
+    riesgoRojo: 0,
+    riesgoAmarillo: 0,
+    riesgoVerde: 0
   })
 
   // Obtener reportes en tiempo real
@@ -47,9 +50,69 @@ function Dashboard() {
       total: datos.length,
       pendientes: datos.filter(r => r.estado === "Pendiente").length,
       enRevision: datos.filter(r => r.estado === "En revisión").length,
-      cerrados: datos.filter(r => r.estado === "Cerrado").length
+      cerrados: datos.filter(r => r.estado === "Cerrado").length,
+      riesgoRojo: datos.filter(r => r.colorRiesgo === "rojo").length,
+      riesgoAmarillo: datos.filter(r => r.colorRiesgo === "amarillo").length,
+      riesgoVerde: datos.filter(r => r.colorRiesgo === "verde").length
     }
     setEstadisticas(stats)
+  }
+
+  // Calcular estadísticas por área
+  const calcularEstadisticasPorArea = () => {
+    const areaStats = {}
+    reportes.forEach(reporte => {
+      const area = reporte.area || "Sin área"
+      if (!areaStats[area]) {
+        areaStats[area] = {
+          total: 0,
+          rojo: 0,
+          amarillo: 0,
+          verde: 0
+        }
+      }
+      areaStats[area].total++
+      if (reporte.colorRiesgo === "rojo") areaStats[area].rojo++
+      if (reporte.colorRiesgo === "amarillo") areaStats[area].amarillo++
+      if (reporte.colorRiesgo === "verde") areaStats[area].verde++
+    })
+    
+    // Convertir a array y ordenar por total
+    return Object.entries(areaStats)
+      .map(([area, stats]) => ({ area, ...stats }))
+      .sort((a, b) => b.total - a.total)
+  }
+
+  // Calcular tendencia temporal (por mes)
+  const calcularTendenciaTemporal = () => {
+    const mesesStats = {}
+    reportes.forEach(reporte => {
+      if (reporte.fechaCreacion) {
+        const fecha = reporte.fechaCreacion.toDate ? reporte.fechaCreacion.toDate() : new Date(reporte.fechaCreacion)
+        const mesKey = `${fecha.getFullYear()}-${String(fecha.getMonth() + 1).padStart(2, '0')}`
+        const mesNombre = fecha.toLocaleDateString("es-ES", { year: 'numeric', month: 'short' })
+        
+        if (!mesesStats[mesKey]) {
+          mesesStats[mesKey] = {
+            mes: mesNombre,
+            total: 0,
+            rojo: 0,
+            amarillo: 0,
+            verde: 0
+          }
+        }
+        mesesStats[mesKey].total++
+        if (reporte.colorRiesgo === "rojo") mesesStats[mesKey].rojo++
+        if (reporte.colorRiesgo === "amarillo") mesesStats[mesKey].amarillo++
+        if (reporte.colorRiesgo === "verde") mesesStats[mesKey].verde++
+      }
+    })
+    
+    // Convertir a array y ordenar por fecha
+    return Object.entries(mesesStats)
+      .map(([key, stats]) => ({ key, ...stats }))
+      .sort((a, b) => a.key.localeCompare(b.key))
+      .slice(-6) // Últimos 6 meses
   }
 
   // Cambiar estado del reporte
@@ -136,14 +199,14 @@ function Dashboard() {
     }
   }
 
-  // Obtener clase de badge según nivel de riesgo
-  const getRiesgoBadgeClass = (nivel) => {
-    switch(nivel) {
-      case "Bajo": return "badge-riesgo-bajo"
-      case "Medio": return "badge-riesgo-medio"
-      case "Alto": return "badge-riesgo-alto"
-      case "Crítico": return "badge-riesgo-critico"
-      default: return ""
+  // Obtener clase de badge según color de riesgo
+  const getRiesgoBadgeClass = (colorRiesgo) => {
+    if (!colorRiesgo) return "badge-riesgo-bajo"
+    switch(colorRiesgo) {
+      case "rojo": return "badge-riesgo-alto"
+      case "amarillo": return "badge-riesgo-medio"
+      case "verde": return "badge-riesgo-bajo"
+      default: return "badge-riesgo-bajo"
     }
   }
 
@@ -207,6 +270,200 @@ function Dashboard() {
             <p>Cerrados</p>
           </div>
         </div>
+
+        <div className="stat-card stat-riesgo-rojo">
+          <div className="stat-icon">🔴</div>
+          <div className="stat-info">
+            <h3>{estadisticas.riesgoRojo}</h3>
+            <p>Riesgo Alto</p>
+          </div>
+        </div>
+
+        <div className="stat-card stat-riesgo-amarillo">
+          <div className="stat-icon">🟡</div>
+          <div className="stat-info">
+            <h3>{estadisticas.riesgoAmarillo}</h3>
+            <p>Riesgo Medio</p>
+          </div>
+        </div>
+
+        <div className="stat-card stat-riesgo-verde">
+          <div className="stat-icon">🟢</div>
+          <div className="stat-info">
+            <h3>{estadisticas.riesgoVerde}</h3>
+            <p>Riesgo Bajo</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Análisis Estadístico Detallado */}
+      <div className="analisis-section">
+        <h2 className="analisis-titulo">
+          <span className="icono-analisis">📈</span>
+          Análisis Estadístico de Reportes
+        </h2>
+
+        <div className="analisis-grid">
+          {/* Reportes por Área */}
+          <div className="analisis-card">
+            <h3 className="card-titulo">
+              <span>🏢</span> Reportes por Área
+            </h3>
+            <div className="analisis-content">
+              {calcularEstadisticasPorArea().length > 0 ? (
+                calcularEstadisticasPorArea().map((item, index) => (
+                  <div key={index} className="stat-bar-container">
+                    <div className="stat-bar-label">
+                      <span className="area-nombre">{item.area}</span>
+                      <span className="area-total">{item.total}</span>
+                    </div>
+                    <div className="stat-bar-wrapper">
+                      <div 
+                        className="stat-bar" 
+                        style={{ width: `${(item.total / reportes.length) * 100}%` }}
+                      >
+                        <div className="stat-bar-segment rojo" style={{ width: `${(item.rojo / item.total) * 100}%` }}></div>
+                        <div className="stat-bar-segment amarillo" style={{ width: `${(item.amarillo / item.total) * 100}%` }}></div>
+                        <div className="stat-bar-segment verde" style={{ width: `${(item.verde / item.total) * 100}%` }}></div>
+                      </div>
+                    </div>
+                    <div className="stat-bar-detail">
+                      {item.rojo > 0 && <span className="badge-mini rojo">{item.rojo} Alto</span>}
+                      {item.amarillo > 0 && <span className="badge-mini amarillo">{item.amarillo} Medio</span>}
+                      {item.verde > 0 && <span className="badge-mini verde">{item.verde} Bajo</span>}
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <p className="no-data">No hay datos disponibles</p>
+              )}
+            </div>
+          </div>
+
+          {/* Tendencia Temporal */}
+          <div className="analisis-card">
+            <h3 className="card-titulo">
+              <span>📅</span> Tendencia Temporal (Últimos 6 Meses)
+            </h3>
+            <div className="analisis-content">
+              {calcularTendenciaTemporal().length > 0 ? (
+                <>
+                  <div className="timeline-chart">
+                    {calcularTendenciaTemporal().map((item, index) => {
+                      const maxTotal = Math.max(...calcularTendenciaTemporal().map(m => m.total))
+                      return (
+                        <div key={index} className="timeline-item">
+                          <div className="timeline-mes">{item.mes}</div>
+                          <div className="timeline-bar-wrapper">
+                            <div 
+                              className="timeline-bar" 
+                              style={{ height: `${(item.total / maxTotal) * 100}%` }}
+                              title={`${item.total} reportes`}
+                            >
+                              <span className="timeline-value">{item.total}</span>
+                            </div>
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </div>
+                  <div className="timeline-legend">
+                    <div className="legend-item">
+                      <span className="legend-dot rojo"></span>
+                      <span>Alto: {calcularTendenciaTemporal().reduce((sum, m) => sum + m.rojo, 0)}</span>
+                    </div>
+                    <div className="legend-item">
+                      <span className="legend-dot amarillo"></span>
+                      <span>Medio: {calcularTendenciaTemporal().reduce((sum, m) => sum + m.amarillo, 0)}</span>
+                    </div>
+                    <div className="legend-item">
+                      <span className="legend-dot verde"></span>
+                      <span>Bajo: {calcularTendenciaTemporal().reduce((sum, m) => sum + m.verde, 0)}</span>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <p className="no-data">No hay datos disponibles</p>
+              )}
+            </div>
+          </div>
+
+          {/* Top Áreas de Riesgo */}
+          <div className="analisis-card analisis-card-highlight">
+            <h3 className="card-titulo">
+              <span>⚠️</span> Áreas con Mayor Riesgo
+            </h3>
+            <div className="analisis-content">
+              {calcularEstadisticasPorArea().length > 0 ? (
+                <div className="top-areas-list">
+                  {calcularEstadisticasPorArea()
+                    .sort((a, b) => (b.rojo + b.amarillo * 0.5) - (a.rojo + a.amarillo * 0.5))
+                    .slice(0, 5)
+                    .map((item, index) => {
+                      const riesgoScore = item.rojo * 3 + item.amarillo * 2 + item.verde * 1
+                      const maxScore = item.total * 3
+                      const riesgoNivel = (riesgoScore / maxScore) * 100
+                      
+                      return (
+                        <div key={index} className="top-area-item">
+                          <div className="top-area-rank">{index + 1}</div>
+                          <div className="top-area-info">
+                            <div className="top-area-nombre">{item.area}</div>
+                            <div className="top-area-stats">
+                              <span className="stat-badge rojo">{item.rojo} 🔴</span>
+                              <span className="stat-badge amarillo">{item.amarillo} 🟡</span>
+                              <span className="stat-badge verde">{item.verde} 🟢</span>
+                            </div>
+                          </div>
+                          <div className="top-area-indicator">
+                            <div 
+                              className={`risk-meter ${riesgoNivel > 66 ? 'high' : riesgoNivel > 33 ? 'medium' : 'low'}`}
+                              style={{ width: `${riesgoNivel}%` }}
+                            ></div>
+                          </div>
+                        </div>
+                      )
+                    })}
+                </div>
+              ) : (
+                <p className="no-data">No hay datos disponibles</p>
+              )}
+            </div>
+          </div>
+
+          {/* Resumen General */}
+          <div className="analisis-card analisis-card-summary">
+            <h3 className="card-titulo">
+              <span>📋</span> Resumen General
+            </h3>
+            <div className="analisis-content">
+              <div className="summary-grid">
+                <div className="summary-item">
+                  <div className="summary-value">{reportes.length}</div>
+                  <div className="summary-label">Total de Reportes</div>
+                </div>
+                <div className="summary-item">
+                  <div className="summary-value">{calcularEstadisticasPorArea().length}</div>
+                  <div className="summary-label">Áreas Involucradas</div>
+                </div>
+                <div className="summary-item">
+                  <div className="summary-value">
+                    {reportes.length > 0 ? ((estadisticas.riesgoRojo / reportes.length) * 100).toFixed(0) : 0}%
+                  </div>
+                  <div className="summary-label">Riesgo Alto</div>
+                </div>
+                <div className="summary-item">
+                  <div className="summary-value">
+                    {calcularEstadisticasPorArea().length > 0 
+                      ? calcularEstadisticasPorArea()[0]?.area 
+                      : "N/A"}
+                  </div>
+                  <div className="summary-label">Área con Más Reportes</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Filtros */}
@@ -238,7 +495,7 @@ function Dashboard() {
                 <th>Fecha</th>
                 <th>Nombre</th>
                 <th>Área</th>
-                <th>Nivel de Riesgo</th>
+                <th>Índice de Tolerabilidad</th>
                 <th>Estado</th>
                 <th>Archivos</th>
                 <th>Acciones</th>
@@ -251,8 +508,8 @@ function Dashboard() {
                   <td>{reporte.nombre}</td>
                   <td>{reporte.area}</td>
                   <td>
-                    <span className={`badge ${getRiesgoBadgeClass(reporte.nivelRiesgo)}`}>
-                      {reporte.nivelRiesgo}
+                    <span className={`badge ${getRiesgoBadgeClass(reporte.colorRiesgo)}`}>
+                      {reporte.indiceTolerabilidad || "N/A"}
                     </span>
                   </td>
                   <td>
@@ -334,13 +591,6 @@ function Dashboard() {
               </div>
 
               <div className="detalle-row">
-                <strong>Nivel de Riesgo:</strong>
-                <span className={`badge ${getRiesgoBadgeClass(reporteSeleccionado.nivelRiesgo)}`}>
-                  {reporteSeleccionado.nivelRiesgo}
-                </span>
-              </div>
-
-              <div className="detalle-row">
                 <strong>Estado:</strong>
                 <span className={`badge ${getBadgeClass(reporteSeleccionado.estado)}`}>
                   {reporteSeleccionado.estado}
@@ -361,6 +611,28 @@ function Dashboard() {
                 <strong>Descripción del Peligro:</strong>
                 <p>{reporteSeleccionado.descripcion}</p>
               </div>
+
+              {reporteSeleccionado.probabilidad && reporteSeleccionado.severidad && (
+                <div className="detalle-riesgo">
+                  <strong>Evaluación de Riesgo:</strong>
+                  <div className="riesgo-grid">
+                    <div className="riesgo-item">
+                      <span className="riesgo-label">Probabilidad:</span>
+                      <span className="riesgo-valor">{reporteSeleccionado.probabilidad}</span>
+                    </div>
+                    <div className="riesgo-item">
+                      <span className="riesgo-label">Severidad:</span>
+                      <span className="riesgo-valor">{reporteSeleccionado.severidad}</span>
+                    </div>
+                    <div className="riesgo-item">
+                      <span className="riesgo-label">Índice:</span>
+                      <span className={`riesgo-indice indice-${reporteSeleccionado.colorRiesgo}`}>
+                        {reporteSeleccionado.indiceTolerabilidad}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               {reporteSeleccionado.archivosAdjuntos && reporteSeleccionado.archivosAdjuntos.length > 0 && (
                 <div className="detalle-archivos">

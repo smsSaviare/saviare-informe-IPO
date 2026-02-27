@@ -12,7 +12,8 @@ function Formulario() {
     correo: "",
     area: "",
     descripcion: "",
-    nivelRiesgo: "Bajo"
+    probabilidad: "1",
+    severidad: "E"
   })
   const [archivos, setArchivos] = useState([])
   const [loading, setLoading] = useState(false)
@@ -45,6 +46,22 @@ function Formulario() {
   const removeFile = (index) => {
     setArchivos(prev => prev.filter((_, i) => i !== index))
   }
+
+  // Calcular índice de tolerabilidad
+  const calcularIndiceTolerabilidad = (prob, sev) => {
+    const indice = `${prob}${sev}`
+    const rojo = ['5A', '5B', '5C', '4A', '4B', '3A']
+    const amarillo = ['5D', '5E', '4C', '4D', '4E', '3B', '3C', '3D', '2A', '2B', '2C']
+    const verde = ['3E', '2D', '2E', '1A', '1B', '1C', '1D', '1E']
+
+    let color = 'verde'
+    if (rojo.includes(indice)) color = 'rojo'
+    else if (amarillo.includes(indice)) color = 'amarillo'
+
+    return { indice, color }
+  }
+
+  const indiceActual = calcularIndiceTolerabilidad(formData.probabilidad, formData.severidad)
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -109,6 +126,9 @@ function Formulario() {
       // Guardar en Firestore
       await addDoc(collection(db, "reportes"), {
         ...formData,
+        probabilidad: parseInt(formData.probabilidad),
+        indiceTolerabilidad: indiceActual.indice,
+        colorRiesgo: indiceActual.color,
         archivosAdjuntos: archivosURLs,
         estado: "Pendiente",
         fechaCreacion: serverTimestamp(),
@@ -121,7 +141,8 @@ function Formulario() {
         correo: "",
         area: "",
         descripcion: "",
-        nivelRiesgo: "Bajo"
+        probabilidad: "1",
+        severidad: "E"
       })
       setArchivos([])
       setUploadProgress("")
@@ -213,24 +234,6 @@ function Formulario() {
         </div>
 
         <div className="form-group">
-          <label htmlFor="nivelRiesgo">
-            Nivel de Riesgo <span className="required">*</span>
-          </label>
-          <select
-            id="nivelRiesgo"
-            name="nivelRiesgo"
-            value={formData.nivelRiesgo}
-            onChange={handleChange}
-            disabled={loading}
-          >
-            <option value="Bajo">Bajo</option>
-            <option value="Medio">Medio</option>
-            <option value="Alto">Alto</option>
-            <option value="Crítico">Crítico</option>
-          </select>
-        </div>
-
-        <div className="form-group">
           <label htmlFor="descripcion">
             Descripción del Peligro Operacional <span className="required">*</span>
           </label>
@@ -243,6 +246,68 @@ function Formulario() {
             rows="6"
             disabled={loading}
           />
+        </div>
+
+        <div className="evaluacion-riesgo-intro">
+          <h3>📊 Evaluación de Riesgo</h3>
+          <p className="intro-text">
+            A continuación, evalúe el nivel de riesgo del peligro identificado seleccionando 
+            la <strong>probabilidad</strong> de que ocurra y la <strong>severidad</strong> de las consecuencias. 
+            El sistema calculará automáticamente el <strong>Índice de Tolerabilidad</strong> que 
+            indica el nivel de riesgo: Alto (🔴), Medio (🟡) o Bajo (🟢).
+          </p>
+        </div>
+
+        <div className="form-row">
+          <div className="form-group form-group-half">
+            <label htmlFor="probabilidad">
+              Probabilidad <span className="required">*</span>
+            </label>
+            <select
+              id="probabilidad"
+              name="probabilidad"
+              value={formData.probabilidad}
+              onChange={handleChange}
+              disabled={loading}
+            >
+              <option value="1">1 - Improbable que ocurra en la industria</option>
+              <option value="2">2 - Ha ocurrido en la industria</option>
+              <option value="3">3 - Probable que ocurra</option>
+              <option value="4">4 - Ha ocurrido</option>
+              <option value="5">5 - Sucede varias veces al año</option>
+            </select>
+          </div>
+
+          <div className="form-group form-group-half">
+            <label htmlFor="severidad">
+              Severidad <span className="required">*</span>
+            </label>
+            <select
+              id="severidad"
+              name="severidad"
+              value={formData.severidad}
+              onChange={handleChange}
+              disabled={loading}
+            >
+              <option value="E">E - Insignificante</option>
+              <option value="D">D - Menor</option>
+              <option value="C">C - Mayor</option>
+              <option value="B">B - Peligroso</option>
+              <option value="A">A - Catastrófico</option>
+            </select>
+          </div>
+        </div>
+
+        <div className="indice-tolerabilidad">
+          <strong>Índice de Tolerabilidad:</strong>
+          <div className={`indice-badge indice-${indiceActual.color}`}>
+            {indiceActual.indice}
+          </div>
+          <small className="indice-descripcion">
+            {indiceActual.color === 'rojo' && '🔴 Riesgo Alto - Requiere acción inmediata'}
+            {indiceActual.color === 'amarillo' && '🟡 Riesgo Medio - Requiere seguimiento'}
+            {indiceActual.color === 'verde' && '🟢 Riesgo Bajo - Monitoreo continuo'}
+          </small>
         </div>
 
         <div className="form-group">

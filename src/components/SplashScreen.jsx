@@ -25,19 +25,59 @@ function SplashScreen({ onComplete }) {
           <img src={planeIcon} alt="Avión SAVIARE" className="plane" />
         </div>
 
-        {/* Nombre de la empresa */}
-        <div className="company-name">
+        {/* Título principal - Sistema de Informe */}
+        <div className="main-title">
           <h1>
-            <span className="clover">🍀</span>
-            <span className="text">SAVIARE</span>
-            <span className="clover">🍀</span>
+            <span className="title-letter" style={{"--letter-index": 0}}>S</span>
+            <span className="title-letter" style={{"--letter-index": 1}}>i</span>
+            <span className="title-letter" style={{"--letter-index": 2}}>s</span>
+            <span className="title-letter" style={{"--letter-index": 3}}>t</span>
+            <span className="title-letter" style={{"--letter-index": 4}}>e</span>
+            <span className="title-letter" style={{"--letter-index": 5}}>m</span>
+            <span className="title-letter" style={{"--letter-index": 6}}>a</span>
+            <span className="title-letter" style={{"--letter-index": 7}}> </span>
+            <span className="title-letter" style={{"--letter-index": 8}}>d</span>
+            <span className="title-letter" style={{"--letter-index": 9}}>e</span>
           </h1>
+          <h2>
+            <span className="title-letter" style={{"--letter-index": 10}}>I</span>
+            <span className="title-letter" style={{"--letter-index": 11}}>n</span>
+            <span className="title-letter" style={{"--letter-index": 12}}>f</span>
+            <span className="title-letter" style={{"--letter-index": 13}}>o</span>
+            <span className="title-letter" style={{"--letter-index": 14}}>r</span>
+            <span className="title-letter" style={{"--letter-index": 15}}>m</span>
+            <span className="title-letter" style={{"--letter-index": 16}}>e</span>
+            <span className="title-letter" style={{"--letter-index": 17}}> </span>
+            <span className="title-letter" style={{"--letter-index": 18}}>d</span>
+            <span className="title-letter" style={{"--letter-index": 19}}>e</span>
+          </h2>
+          <h3>
+            <span className="title-letter" style={{"--letter-index": 20}}>P</span>
+            <span className="title-letter" style={{"--letter-index": 21}}>e</span>
+            <span className="title-letter" style={{"--letter-index": 22}}>l</span>
+            <span className="title-letter" style={{"--letter-index": 23}}>i</span>
+            <span className="title-letter" style={{"--letter-index": 24}}>g</span>
+            <span className="title-letter" style={{"--letter-index": 25}}>r</span>
+            <span className="title-letter" style={{"--letter-index": 26}}>o</span>
+            <span className="title-letter" style={{"--letter-index": 27}}> </span>
+            <span className="title-letter" style={{"--letter-index": 28}}>O</span>
+            <span className="title-letter" style={{"--letter-index": 29}}>p</span>
+            <span className="title-letter" style={{"--letter-index": 30}}>e</span>
+            <span className="title-letter" style={{"--letter-index": 31}}>r</span>
+            <span className="title-letter" style={{"--letter-index": 32}}>a</span>
+            <span className="title-letter" style={{"--letter-index": 33}}>c</span>
+            <span className="title-letter" style={{"--letter-index": 34}}>i</span>
+            <span className="title-letter" style={{"--letter-index": 35}}>o</span>
+            <span className="title-letter" style={{"--letter-index": 36}}>n</span>
+            <span className="title-letter" style={{"--letter-index": 37}}>a</span>
+            <span className="title-letter" style={{"--letter-index": 38}}>l</span>
+          </h3>
         </div>
 
-        {/* Subtítulo */}
-        <p className="splash-subtitle">
-          Sistema de Informe de Peligro Operacional
-        </p>
+        {/* Marca - By SAVIARE */}
+        <div className="brand-footer">
+          <p>By <span className="clover">🍀</span> SAVIARE <span className="clover">🍀</span></p>
+        </div>
       </div>
     </div>
   )

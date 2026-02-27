@@ -7,15 +7,11 @@ import ProtectedRoute from "./components/ProtectedRoute"
 import SplashScreen from "./components/SplashScreen"
 
 function App() {
-  const [showSplash, setShowSplash] = useState(true)
-
-  useEffect(() => {
+  const [showSplash, setShowSplash] = useState(() => {
     // Mostrar splash solo en la primera visita de la sesión
     const splashShown = sessionStorage.getItem("splashShown")
-    if (splashShown) {
-      setShowSplash(false)
-    }
-  }, [])
+    return !splashShown // Si no está en sessionStorage, mostrar splash
+  })
 
   const handleSplashComplete = () => {
     setShowSplash(false)

@@ -59,7 +59,7 @@
 .plane {
   font-size: 4rem;
   display: inline-block;
-  animation: planeFly 2.5s ease-in-out forwards;
+  animation: planeFly 4.5s ease-in-out forwards;
   filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
   max-width: 100%;
   height: auto;

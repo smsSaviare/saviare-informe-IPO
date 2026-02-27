@@ -7,12 +7,12 @@ function SplashScreen({ onComplete }) {
   const [isExiting, setIsExiting] = useState(false)
 
   useEffect(() => {
-    // Mostrar splash por 3 segundos
+    // Mostrar splash por 5 segundos
     const timer = setTimeout(() => {
       setIsExiting(true)
       // Esperar a que termine la animación de salida
       setTimeout(onComplete, 600)
-    }, 3000)
+    }, 5000)
 
     return () => clearTimeout(timer)
   }, [onComplete])

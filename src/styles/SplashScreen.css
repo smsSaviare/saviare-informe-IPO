@@ -94,32 +94,28 @@
 .main-title {
   margin: 20px 0;
   animation: fadeIn 0.8s ease-out 0.8s backwards;
+  line-height: 1.1;
 }
 
 .main-title h1 {
   font-size: 2.8rem;
   font-weight: 800;
   margin: 0;
-  line-height: 1.3;
+  line-height: 1.2;
   letter-spacing: 2px;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  display: block;
 }
 
-.main-title h2 {
-  font-size: 2.8rem;
-  font-weight: 800;
-  margin: 0.2rem 0;
-  line-height: 1.3;
-  letter-spacing: 2px;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+.main-title h1.line-spacing {
+  margin-top: 0.3rem;
 }
 
-.main-title h3 {
-  font-size: 2.8rem;
-  font-weight: 800;
-  margin: 0.2rem 0;
-  line-height: 1.3;
-  letter-spacing: 2px;
+.main-title h2.ipo-badge {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0.5rem 0 0 0;
+  letter-spacing: 3px;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
@@ -141,7 +137,7 @@
   }
 }
 
-/* Marca - By SAVIARE */
+/* Marca - SAVIARE */
 .brand-footer {
   margin-top: 20px;
   animation: fadeIn 1s ease-out 3.2s backwards;
@@ -149,27 +145,25 @@
 
 .brand-footer p {
   margin: 0;
-  font-size: 1.2rem;
-  font-weight: 600;
-  letter-spacing: 1px;
+  font-size: 1.8rem;
+  font-weight: 700;
+  letter-spacing: 2px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 12px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .clover {
-  font-size: 1.2rem;
+  font-size: 1.6rem;
   animation: cloverRotate 2s ease-in-out infinite;
   display: inline-block;
 }
 
-.brand-footer .clover:first-of-type {
+.brand-footer .clover {
+  font-size: 1.6rem;
   animation-delay: 0.2s;
-}
-
-.brand-footer .clover:last-of-type {
-  animation-delay: 0.4s;
 }
 
 @keyframes cloverRotate {
@@ -198,19 +192,22 @@
 
 /* Responsive */
 @media (max-width: 768px) {
-  .main-title h1,
-  .main-title h2,
-  .main-title h3 {
+  .main-title h1 {
     font-size: 2rem;
     letter-spacing: 1px;
   }
 
+  .main-title h2.ipo-badge {
+    font-size: 1.5rem;
+  }
+
   .brand-footer p {
-    font-size: 1rem;
+    font-size: 1.4rem;
+    gap: 10px;
   }
 
   .clover {
-    font-size: 1rem;
+    font-size: 1.3rem;
   }
 
   .plane {
@@ -219,19 +216,22 @@
 }
 
 @media (max-width: 480px) {
-  .main-title h1,
-  .main-title h2,
-  .main-title h3 {
+  .main-title h1 {
     font-size: 1.5rem;
     letter-spacing: 0.5px;
   }
 
+  .main-title h2.ipo-badge {
+    font-size: 1.2rem;
+  }
+
   .brand-footer p {
-    font-size: 0.9rem;
+    font-size: 1.1rem;
+    gap: 8px;
   }
 
   .clover {
-    font-size: 0.9rem;
+    font-size: 1rem;
   }
 
   .plane {

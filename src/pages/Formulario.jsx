@@ -88,10 +88,11 @@ function Formulario() {
           formDataCloud.append("file", archivo)
           formDataCloud.append("upload_preset", CLOUDINARY_UPLOAD_PRESET)
           formDataCloud.append("folder", `reportes/${nombreCarpeta}`)
+          formDataCloud.append("resource_type", "auto")
           
-          // Subir a Cloudinary
+          // Subir a Cloudinary con tipo automático (soporta PDFs, imágenes, etc)
           const response = await axios.post(
-            `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/upload`,
+            `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/auto/upload`,
             formDataCloud
           )
           

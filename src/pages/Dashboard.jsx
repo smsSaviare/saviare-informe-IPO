@@ -203,6 +203,7 @@ function Dashboard() {
                 <th>Área</th>
                 <th>Nivel de Riesgo</th>
                 <th>Estado</th>
+                <th>Archivos</th>
                 <th>Acciones</th>
               </tr>
             </thead>
@@ -221,6 +222,15 @@ function Dashboard() {
                     <span className={`badge ${getBadgeClass(reporte.estado)}`}>
                       {reporte.estado}
                     </span>
+                  </td>
+                  <td>
+                    {reporte.archivosAdjuntos && reporte.archivosAdjuntos.length > 0 ? (
+                      <span className="badge badge-archivos" title={`${reporte.archivosAdjuntos.length} archivo(s)`}>
+                        📄 {reporte.archivosAdjuntos.length}
+                      </span>
+                    ) : (
+                      <span className="text-muted">-</span>
+                    )}
                   </td>
                   <td className="acciones-cell">
                     <button
@@ -319,6 +329,34 @@ function Dashboard() {
                 <strong>Descripción del Peligro:</strong>
                 <p>{reporteSeleccionado.descripcion}</p>
               </div>
+
+              {reporteSeleccionado.archivosAdjuntos && reporteSeleccionado.archivosAdjuntos.length > 0 && (
+                <div className="detalle-archivos">
+                  <strong>Archivos Adjuntos ({reporteSeleccionado.archivosAdjuntos.length}):</strong>
+                  <div className="archivos-lista">
+                    {reporteSeleccionado.archivosAdjuntos.map((archivo, index) => (
+                      <a
+                        key={index}
+                        href={archivo.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="archivo-item"
+                        title={`Descargar ${archivo.nombre}`}
+                      >
+                        <span className="archivo-icon">
+                          {archivo.tipo?.includes('pdf') ? '📝' : 
+                           archivo.tipo?.includes('image') ? '🖼️' : 
+                           archivo.tipo?.includes('word') ? '📄' : 
+                           archivo.tipo?.includes('excel') || archivo.tipo?.includes('spreadsheet') ? '📊' : '📁'}
+                        </span>
+                        <span className="archivo-nombre">{archivo.nombre}</span>
+                        <span className="archivo-tamaño">({(archivo.tamaño / 1024).toFixed(1)} KB)</span>
+                        <span className="archivo-download">⬇️</span>
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               <div className="modal-actions">
                 {reporteSeleccionado.estado === "Pendiente" && (

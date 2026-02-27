@@ -183,6 +183,57 @@
   font-style: italic;
 }
 
+/* Archivos adjuntos */
+.form-group input[type="file"] {
+  padding: 10px;
+  cursor: pointer;
+  border-style: dashed;
+}
+
+.form-group input[type="file"]:hover {
+  border-color: var(--color-secondary);
+  background: #F1F8F4;
+}
+
+.form-help {
+  display: block;
+  margin-top: 8px;
+  font-size: 0.85rem;
+  color: #666;
+  font-style: italic;
+}
+
+.archivos-seleccionados {
+  margin-top: 15px;
+  padding: 15px;
+  background: #F1F8F4;
+  border-left: 4px solid var(--color-primary);
+  border-radius: 6px;
+}
+
+.archivos-seleccionados strong {
+  display: block;
+  margin-bottom: 10px;
+  color: var(--color-primary);
+}
+
+.archivos-seleccionados ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.archivos-seleccionados li {
+  padding: 8px 0;
+  color: var(--color-text);
+  font-size: 0.9rem;
+}
+
+.alert-info {
+  background: #E3F2FD;
+  border-left: 4px solid #0277BD;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .formulario-container {

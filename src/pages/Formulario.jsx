@@ -1,9 +1,14 @@
 // src/pages/Formulario.jsx
 import { useState } from "react"
 import { collection, addDoc, serverTimestamp } from "firebase/firestore"
+import axios from "axios"
 import { db } from "../firebase"
 import logoAirplane from "../assets/avion.jpg"
 import "../styles/Formulario.css"
+
+// Configuración de Cloudinary
+const CLOUDINARY_CLOUD_NAME = "dxa753tl2"
+const CLOUDINARY_UPLOAD_PRESET = "saviare_ipo"
 
 function Formulario() {
   const [formData, setFormData] = useState({
@@ -13,13 +18,29 @@ function Formulario() {
     descripcion: "",
     nivelRiesgo: "Bajo"
   })
+  const [archivos, setArchivos] = useState([])
   const [loading, setLoading] = useState(false)
+  const [uploadProgress, setUploadProgress] = useState("")
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState("")
 
   const handleChange = (e) => {
     const { name, value } = e.target
     setFormData(prev => ({ ...prev, [name]: value }))
+  }
+
+  const handleFileChange = (e) => {
+    const files = Array.from(e.target.files)
+    // Validar tamaño (máx 5MB por archivo)
+    const archivosValidos = files.filter(file => {
+      if (file.size > 5 * 1024 * 1024) {
+        setError(`El archivo ${file.name} excede el tamaño máximo de 5MB`)
+        return false
+      }
+      return true
+    })
+    setArchivos(archivosValidos)
+    setError("")
   }
 
   const handleSubmit = async (e) => {
@@ -44,9 +65,52 @@ function Formulario() {
     }
 
     try {
+      let archivosURLs = []
+
+      // Subir archivos solo si hay archivos adjuntos
+      if (archivos.length > 0) {
+        setUploadProgress("Subiendo archivos...")
+        
+        // Crear nombre de carpeta sanitizado (sin caracteres especiales)
+        const nombreCarpeta = formData.nombre
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .replace(/[^a-zA-Z0-9\s]/g, "")
+          .replace(/\s+/g, "-")
+          .toLowerCase()
+        
+        // Subir cada archivo a Cloudinary
+        for (let i = 0; i < archivos.length; i++) {
+          const archivo = archivos[i]
+          
+          // Crear FormData para Cloudinary
+          const formDataCloud = new FormData()
+          formDataCloud.append("file", archivo)
+          formDataCloud.append("upload_preset", CLOUDINARY_UPLOAD_PRESET)
+          formDataCloud.append("folder", `reportes/${nombreCarpeta}`)
+          
+          // Subir a Cloudinary
+          const response = await axios.post(
+            `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/upload`,
+            formDataCloud
+          )
+          
+          archivosURLs.push({
+            nombre: archivo.name,
+            url: response.data.secure_url,
+            tipo: archivo.type,
+            tamaño: archivo.size,
+            cloudinaryId: response.data.public_id
+          })
+        }
+      }
+
+      setUploadProgress("Guardando reporte...")
+      
       // Guardar en Firestore
       await addDoc(collection(db, "reportes"), {
         ...formData,
+        archivosAdjuntos: archivosURLs,
         estado: "Pendiente",
         fechaCreacion: serverTimestamp(),
         fechaActualizacion: serverTimestamp()
@@ -60,12 +124,19 @@ function Formulario() {
         descripcion: "",
         nivelRiesgo: "Bajo"
       })
+      setArchivos([])
+      setUploadProgress("")
+      
+      // Limpiar el input de archivos
+      const fileInput = document.getElementById("archivos")
+      if (fileInput) fileInput.value = ""
 
       // Ocultar mensaje de éxito después de 5 segundos
       setTimeout(() => setSuccess(false), 5000)
     } catch (err) {
       console.error("Error al guardar:", err)
       setError("Error al enviar el reporte. Por favor intente nuevamente.")
+      setUploadProgress("")
     } finally {
       setLoading(false)
     }
@@ -174,6 +245,43 @@ function Formulario() {
             disabled={loading}
           />
         </div>
+
+        <div className="form-group">
+          <label htmlFor="archivos">
+            Archivos Adjuntos (Opcional)
+          </label>
+          <input
+            type="file"
+            id="archivos"
+            name="archivos"
+            onChange={handleFileChange}
+            multiple
+            accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.xls,.xlsx"
+            disabled={loading}
+          />
+          <small className="form-help">
+            📎 Puede adjuntar fotos, PDFs o documentos (máx. 5MB por archivo)
+          </small>
+          {archivos.length > 0 && (
+            <div className="archivos-seleccionados">
+              <strong>Archivos seleccionados:</strong>
+              <ul>
+                {archivos.map((archivo, index) => (
+                  <li key={index}>
+                    📄 {archivo.name} ({(archivo.size / 1024).toFixed(2)} KB)
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+
+        {uploadProgress && (
+          <div className="alert alert-info">
+            <span className="alert-icon">⏳</span>
+            {uploadProgress}
+          </div>
+        )}
 
         {error && (
           <div className="alert alert-error">

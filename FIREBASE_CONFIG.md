@@ -30,7 +30,63 @@ service cloud.firestore {
 
 5. Hacer clic en **Publicar**
 
-## 🔐 Configuración de Authentication
+## � Reglas de Seguridad de Firebase Storage
+
+Para configurar las reglas de seguridad de Firebase Storage (carga de archivos):
+
+1. Ir a Firebase Console: https://console.firebase.google.com/
+2. Seleccionar el proyecto: `saviare-ipo`
+3. Ir a **Storage** → **Rules**
+4. Copiar y pegar las siguientes reglas:
+
+```javascript
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Carpeta de reportes
+    match /reportes/{nombrePersona}/{archivo} {
+      // Permitir subida de archivos a cualquiera (para formulario público)
+      allow create: if request.resource.size < 5 * 1024 * 1024  // Máx 5MB
+                    && request.resource.contentType.matches('image/.*|application/pdf|application/msword|application/vnd.openxmlformats-officedocument.*|application/vnd.ms-excel');
+      
+      // Permitir lectura a usuarios autenticados (para dashboard)
+      allow read: if request.auth != null;
+      
+      // Permitir lectura pública (si quieres que los enlaces sean públicos)
+      // allow read: if true;
+      
+      // Permitir eliminación solo a usuarios autenticados
+      allow delete: if request.auth != null;
+    }
+  }
+}
+```
+
+5. Hacer clic en **Publicar**
+
+### Tipos de Archivos Permitidos
+
+- **Imágenes**: JPG, JPEG, PNG, GIF, WebP
+- **Documentos**: PDF, DOC, DOCX
+- **Hojas de cálculo**: XLS, XLSX
+- **Tamaño máximo**: 5MB por archivo
+
+### Estructura de Carpetas en Storage
+
+```
+reportes/
+  ├── juan-perez/
+  │   ├── 1709054321234-evidencia.pdf
+  │   └── 1709054321567-foto.jpg
+  ├── maria-garcia/
+  │   ├── 1709054400123-documento.docx
+  │   └── 1709054400456-imagen.png
+  └── ...
+```
+
+**Nota**: Las carpetas se crean automáticamente cuando una persona adjunta archivos al formulario. El nombre de la carpeta es el nombre de la persona sin caracteres especiales.
+
+## �🔐 Configuración de Authentication
 
 ### Habilitar Email/Password
 
@@ -84,6 +140,19 @@ Cada documento tiene la siguiente estructura:
   area: String,             // Área/Departamento
   descripcion: String,      // Descripción detallada del peligro
   nivelRiesgo: String,      // "Bajo" | "Medio" | "Alto" | "Crítico"
+  
+  // Archivos adjuntos (opcional)
+  archivosAdjuntos: Array,  // Array de objetos con archivos
+  /* Estructura de archivosAdjuntos:
+  [
+    {
+      nombre: String,       // Nombre original del archivo
+      url: String,          // URL de descarga de Firebase Storage
+      tipo: String,         // Tipo MIME (image/jpeg, application/pdf, etc.)
+      tamaño: Number        // Tamaño en bytes
+    }
+  ]
+  */
   
   // Estado y fechas
   estado: String,           // "Pendiente" | "En revisión" | "Cerrado"

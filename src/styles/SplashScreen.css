@@ -94,29 +94,32 @@
 .main-title {
   margin: 20px 0;
   animation: fadeIn 0.8s ease-out 0.8s backwards;
-  line-height: 1.1;
+  line-height: 1.15;
 }
 
-.main-title h1 {
+.title-line {
+  display: block;
   font-size: 2.8rem;
   font-weight: 800;
   margin: 0;
-  line-height: 1.2;
-  letter-spacing: 2px;
+  line-height: 1.1;
+  letter-spacing: 0px;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  display: block;
 }
 
-.main-title h1.line-spacing {
-  margin-top: 0.3rem;
+.title-line .space {
+  display: inline-block;
+  width: 0.5em;
+  height: 1em;
 }
 
-.main-title h2.ipo-badge {
+.ipo-badge {
   font-size: 2rem;
   font-weight: 700;
   margin: 0.5rem 0 0 0;
   letter-spacing: 3px;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  display: block;
 }
 
 /* Animación de letras individuales */
@@ -141,13 +144,17 @@
 .brand-footer {
   margin-top: 20px;
   animation: fadeIn 1s ease-out 3.2s backwards;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
 }
 
-.brand-footer p {
+.brand-text {
   margin: 0;
-  font-size: 1.8rem;
-  font-weight: 700;
-  letter-spacing: 2px;
+  font-size: 2.2rem;
+  font-weight: 900;
+  letter-spacing: 3px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -155,14 +162,30 @@
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
+.saviare-brand {
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+}
+
+.brand-subtitle {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 400;
+  letter-spacing: 1px;
+  opacity: 0.9;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  text-transform: uppercase;
+}
+
 .clover {
-  font-size: 1.6rem;
+  font-size: 1.8rem;
   animation: cloverRotate 2s ease-in-out infinite;
   display: inline-block;
 }
 
 .brand-footer .clover {
-  font-size: 1.6rem;
+  font-size: 1.8rem;
   animation-delay: 0.2s;
 }
 
@@ -192,22 +215,26 @@
 
 /* Responsive */
 @media (max-width: 768px) {
-  .main-title h1 {
+  .title-line {
     font-size: 2rem;
-    letter-spacing: 1px;
+    letter-spacing: 0px;
   }
 
-  .main-title h2.ipo-badge {
+  .ipo-badge {
     font-size: 1.5rem;
   }
 
-  .brand-footer p {
-    font-size: 1.4rem;
+  .brand-text {
+    font-size: 1.6rem;
     gap: 10px;
   }
 
+  .brand-subtitle {
+    font-size: 0.85rem;
+  }
+
   .clover {
-    font-size: 1.3rem;
+    font-size: 1.4rem;
   }
 
   .plane {
@@ -216,18 +243,22 @@
 }
 
 @media (max-width: 480px) {
-  .main-title h1 {
+  .title-line {
     font-size: 1.5rem;
-    letter-spacing: 0.5px;
+    letter-spacing: 0px;
   }
 
-  .main-title h2.ipo-badge {
+  .ipo-badge {
     font-size: 1.2rem;
   }
 
-  .brand-footer p {
-    font-size: 1.1rem;
+  .brand-text {
+    font-size: 1.2rem;
     gap: 8px;
+  }
+
+  .brand-subtitle {
+    font-size: 0.8rem;
   }
 
   .clover {

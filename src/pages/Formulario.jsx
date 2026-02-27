@@ -83,16 +83,32 @@ function Formulario() {
         for (let i = 0; i < archivos.length; i++) {
           const archivo = archivos[i]
           
+          // Determinar el tipo de recurso según el tipo de archivo
+          let resourceType = "auto"
+          let uploadEndpoint = "auto"
+          
+          if (archivo.type.startsWith("image/")) {
+            resourceType = "image"
+            uploadEndpoint = "image"
+          } else if (archivo.type.includes("pdf") || archivo.type.includes("document") || 
+                     archivo.type.includes("word") || archivo.type.includes("excel") ||
+                     archivo.type.includes("spreadsheet") || archivo.type.includes("text")) {
+            resourceType = "raw"
+            uploadEndpoint = "raw"
+          } else {
+            resourceType = "raw"
+            uploadEndpoint = "raw"
+          }
+          
           // Crear FormData para Cloudinary
           const formDataCloud = new FormData()
           formDataCloud.append("file", archivo)
           formDataCloud.append("upload_preset", CLOUDINARY_UPLOAD_PRESET)
           formDataCloud.append("folder", `reportes/${nombreCarpeta}`)
-          formDataCloud.append("resource_type", "auto")
           
-          // Subir a Cloudinary con tipo automático (soporta PDFs, imágenes, etc)
+          // Subir a Cloudinary
           const response = await axios.post(
-            `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/auto/upload`,
+            `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/${uploadEndpoint}/upload`,
             formDataCloud
           )
           
@@ -101,7 +117,8 @@ function Formulario() {
             url: response.data.secure_url,
             tipo: archivo.type,
             tamaño: archivo.size,
-            cloudinaryId: response.data.public_id
+            cloudinaryId: response.data.public_id,
+            resourceType: resourceType
           })
         }
       }

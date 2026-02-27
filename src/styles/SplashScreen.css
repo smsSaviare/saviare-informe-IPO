@@ -61,6 +61,8 @@
   display: inline-block;
   animation: planeFly 2.5s ease-in-out forwards;
   filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
+  max-width: 100%;
+  height: auto;
 }
 
 @keyframes planeFly {

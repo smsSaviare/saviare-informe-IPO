@@ -4,6 +4,7 @@ import { signOut } from "firebase/auth"
 import { collection, query, onSnapshot, doc, updateDoc, orderBy } from "firebase/firestore"
 import { auth, db } from "../firebase"
 import { useNavigate } from "react-router-dom"
+import logoAirplane from "../assets/avion.jpg"
 import "../styles/Dashboard.css"
 
 function Dashboard() {
@@ -122,6 +123,9 @@ function Dashboard() {
       {/* Header */}
       <header className="dashboard-header">
         <div>
+          <div className="dashboard-logo-container">
+            <img src={logoAirplane} alt="SAVIARE" className="dashboard-logo" />
+          </div>
           <h1>
             <span className="logo-icon">🍀</span>
             Dashboard SAVIARE

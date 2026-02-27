@@ -14,6 +14,19 @@
   margin-bottom: 40px;
 }
 
+.logo-container {
+  margin-bottom: 20px;
+  animation: slideInFromTop 0.6s ease-out;
+}
+
+.logo-airplane {
+  max-width: 120px;
+  height: auto;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  animation: cloverPulse 2s ease-in-out infinite;
+}
+
 .formulario-header h1 {
   font-size: 3rem;
   margin: 0;

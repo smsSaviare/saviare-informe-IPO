@@ -1,5 +1,6 @@
 // src/components/SplashScreen.jsx
 import { useEffect, useState } from "react"
+import planeIcon from "../assets/plane-icon.png"
 import "../styles/SplashScreen.css"
 
 function SplashScreen({ onComplete }) {
@@ -21,7 +22,7 @@ function SplashScreen({ onComplete }) {
       <div className="splash-content">
         {/* Avión animado */}
         <div className="plane-animation">
-          <span className="plane">✈️</span>
+          <img src={planeIcon} alt="Avión SAVIARE" className="plane" />
         </div>
 
         {/* Nombre de la empresa */}

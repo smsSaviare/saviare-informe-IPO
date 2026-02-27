@@ -2,6 +2,7 @@
 import { useState } from "react"
 import { collection, addDoc, serverTimestamp } from "firebase/firestore"
 import { db } from "../firebase"
+import logoAirplane from "../assets/avion.jpg"
 import "../styles/Formulario.css"
 
 function Formulario() {
@@ -73,6 +74,9 @@ function Formulario() {
   return (
     <div className="formulario-container">
       <div className="formulario-header">
+        <div className="logo-container">
+          <img src={logoAirplane} alt="SAVIARE" className="logo-airplane" />
+        </div>
         <h1>
           <span className="logo-icon">🍀</span>
           SAVIARE

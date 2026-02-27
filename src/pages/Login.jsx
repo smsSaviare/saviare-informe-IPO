@@ -3,6 +3,7 @@ import { useState } from "react"
 import { signInWithEmailAndPassword } from "firebase/auth"
 import { useNavigate } from "react-router-dom"
 import { auth } from "../firebase"
+import logoAirplane from "../assets/avion.jpg"
 import "../styles/Login.css"
 
 function Login() {
@@ -46,6 +47,9 @@ function Login() {
     <div className="login-container">
       <div className="login-card">
         <div className="login-header">
+          <div className="login-logo-container">
+            <img src={logoAirplane} alt="SAVIARE" className="login-logo" />
+          </div>
           <h1>
             <span className="logo-icon">🍀</span>
             SAVIARE

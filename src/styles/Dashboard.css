@@ -327,6 +327,55 @@
   transform: scale(1.1);
 }
 
+.btn-eliminar {
+  border: 2px solid var(--color-danger);
+}
+
+.btn-eliminar:hover {
+  background: var(--color-danger);
+  transform: scale(1.1);
+}
+
+/* Select de estado en tabla */
+.estado-select {
+  padding: 6px 12px;
+  border: 2px solid #ddd;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: white;
+}
+
+.estado-select:hover {
+  border-color: var(--color-primary);
+}
+
+.estado-select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(27, 94, 32, 0.1);
+}
+
+.estado-select.badge-pendiente {
+  background: #FFF3E0;
+  color: #E65100;
+  border-color: #E65100;
+}
+
+.estado-select.badge-revision {
+  background: #E3F2FD;
+  color: #0277BD;
+  border-color: #0277BD;
+}
+
+.estado-select.badge-cerrado {
+  background: #E8F5E9;
+  color: #2E7D32;
+  border-color: #2E7D32;
+}
+
 /* Modal */
 .modal-overlay {
   position: fixed;

@@ -35,8 +35,15 @@ function Formulario() {
       }
       return true
     })
-    setArchivos(archivosValidos)
+    // Agregar nuevos archivos a los existentes
+    setArchivos(prev => [...prev, ...archivosValidos])
     setError("")
+    // Limpiar el input
+    e.target.value = ""
+  }
+
+  const removeFile = (index) => {
+    setArchivos(prev => prev.filter((_, i) => i !== index))
   }
 
   const handleSubmit = async (e) => {
@@ -256,11 +263,22 @@ function Formulario() {
           </small>
           {archivos.length > 0 && (
             <div className="archivos-seleccionados">
-              <strong>Archivos seleccionados:</strong>
+              <strong>Archivos seleccionados ({archivos.length}):</strong>
               <ul>
                 {archivos.map((archivo, index) => (
-                  <li key={index}>
-                    📄 {archivo.name} ({(archivo.size / 1024).toFixed(2)} KB)
+                  <li key={index} className="archivo-item-preview">
+                    <span className="archivo-info">
+                      📄 {archivo.name} ({(archivo.size / 1024).toFixed(2)} KB)
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => removeFile(index)}
+                      className="btn-remove-file"
+                      title="Quitar archivo"
+                      disabled={loading}
+                    >
+                      ✕
+                    </button>
                   </li>
                 ))}
               </ul>

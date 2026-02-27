@@ -1,8 +1,9 @@
 // src/pages/Dashboard.jsx
 import { useState, useEffect } from "react"
 import { signOut } from "firebase/auth"
-import { collection, query, onSnapshot, doc, updateDoc, orderBy } from "firebase/firestore"
-import { auth, db } from "../firebase"
+import { collection, query, onSnapshot, doc, updateDoc, deleteDoc, orderBy } from "firebase/firestore"
+import { ref, deleteObject } from "firebase/storage"
+import { auth, db, storage } from "../firebase"
 import { useNavigate } from "react-router-dom"
 import logoAirplane from "../assets/avion.jpg"
 import "../styles/Dashboard.css"
@@ -62,6 +63,42 @@ function Dashboard() {
     } catch (error) {
       console.error("Error al actualizar estado:", error)
       alert("Error al actualizar el estado del reporte")
+    }
+  }
+
+  // Eliminar reporte completo (con archivos)
+  const eliminarReporte = async (reporte) => {
+    const confirmar = window.confirm(
+      `¿Estás seguro de eliminar el reporte de "${reporte.nombre}"?\n\nEsto eliminará:\n- El reporte completo\n- Todos los archivos adjuntos (${reporte.archivosAdjuntos?.length || 0})\n\n Esta acción no se puede deshacer.`
+    )
+
+    if (!confirmar) return
+
+    try {
+      // Eliminar archivos de Storage si existen
+      if (reporte.archivosAdjuntos && reporte.archivosAdjuntos.length > 0) {
+        for (const archivo of reporte.archivosAdjuntos) {
+          try {
+            // Extraer el path del archivo desde la URL
+            const url = archivo.url
+            const match = url.match(/reportes%2F[^?]+/)
+            if (match) {
+              const filePath = decodeURIComponent(match[0].replace(/%2F/g, '/'))
+              const fileRef = ref(storage, filePath)
+              await deleteObject(fileRef)
+            }
+          } catch (err) {
+            console.warn("Error al eliminar archivo:", err)
+          }
+        }
+      }
+
+      // Eliminar el documento de Firestore
+      await deleteDoc(doc(db, "reportes", reporte.id))
+      alert("Reporte eliminado exitosamente")
+    } catch (error) {
+      console.error("Error al eliminar reporte:", error)
+      alert("Error al eliminar el reporte. Por favor intenta nuevamente.")
     }
   }
 
@@ -219,9 +256,15 @@ function Dashboard() {
                     </span>
                   </td>
                   <td>
-                    <span className={`badge ${getBadgeClass(reporte.estado)}`}>
-                      {reporte.estado}
-                    </span>
+                    <select
+                      value={reporte.estado}
+                      onChange={(e) => cambiarEstado(reporte.id, e.target.value)}
+                      className={`estado-select ${getBadgeClass(reporte.estado)}`}
+                    >
+                      <option value="Pendiente">Pendiente</option>
+                      <option value="En revisión">En revisión</option>
+                      <option value="Cerrado">Cerrado</option>
+                    </select>
                   </td>
                   <td>
                     {reporte.archivosAdjuntos && reporte.archivosAdjuntos.length > 0 ? (
@@ -240,24 +283,13 @@ function Dashboard() {
                     >
                       👁️
                     </button>
-                    {reporte.estado === "Pendiente" && (
-                      <button
-                        onClick={() => cambiarEstado(reporte.id, "En revisión")}
-                        className="btn-accion btn-revision"
-                        title="Marcar en revisión"
-                      >
-                        🔍
-                      </button>
-                    )}
-                    {reporte.estado === "En revisión" && (
-                      <button
-                        onClick={() => cambiarEstado(reporte.id, "Cerrado")}
-                        className="btn-accion btn-cerrar"
-                        title="Cerrar reporte"
-                      >
-                        ✓
-                      </button>
-                    )}
+                    <button
+                      onClick={() => eliminarReporte(reporte)}
+                      className="btn-accion btn-eliminar"
+                      title="Eliminar reporte"
+                    >
+                      🗑️
+                    </button>
                   </td>
                 </tr>
               ))}

@@ -73,7 +73,11 @@ function Formulario() {
   return (
     <div className="formulario-container">
       <div className="formulario-header">
-        <h1>SAVIARE</h1>
+        <h1>
+          <span className="logo-icon">🍀</span>
+          SAVIARE
+          <span className="logo-icon">🍀</span>
+        </h1>
         <h2>Informe de Peligro Operacional (IPO)</h2>
         <p className="formulario-subtitle">
           Reporte cualquier situación de peligro o incidente que pueda comprometer la seguridad operacional

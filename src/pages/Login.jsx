@@ -46,7 +46,10 @@ function Login() {
     <div className="login-container">
       <div className="login-card">
         <div className="login-header">
-          <h1>SAVIARE</h1>
+          <h1>
+            <span className="logo-icon">🍀</span>
+            SAVIARE
+          </h1>
           <h2>Acceso Administrativo</h2>
           <p>Ingrese sus credenciales para acceder al dashboard</p>
         </div>

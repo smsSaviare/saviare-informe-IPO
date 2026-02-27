@@ -5,7 +5,7 @@
   margin: 0 auto;
   padding: 40px 20px;
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
 }
 
 .formulario-header {
@@ -19,6 +19,14 @@
   margin: 0;
   font-weight: 700;
   letter-spacing: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+}
+
+.formulario-header h1 .logo-icon {
+  font-size: 3rem;
 }
 
 .formulario-header h2 {
@@ -30,7 +38,7 @@
 .formulario-subtitle {
   font-size: 1rem;
   margin-top: 15px;
-  opacity: 0.9;
+  opacity: 0.95;
   max-width: 600px;
   margin-left: auto;
   margin-right: auto;
@@ -39,8 +47,8 @@
 .formulario-form {
   background: white;
   padding: 40px;
-  border-radius: 10px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(27, 94, 32, 0.15);
 }
 
 .form-group {
@@ -51,12 +59,12 @@
   display: block;
   margin-bottom: 8px;
   font-weight: 600;
-  color: #333;
+  color: var(--color-text-dark);
   font-size: 0.95rem;
 }
 
 .required {
-  color: #e74c3c;
+  color: var(--color-danger);
 }
 
 .form-group input,
@@ -64,8 +72,8 @@
 .form-group textarea {
   width: 100%;
   padding: 12px 15px;
-  border: 2px solid #e0e0e0;
-  border-radius: 6px;
+  border: 2px solid var(--color-border);
+  border-radius: 8px;
   font-size: 1rem;
   transition: all 0.3s ease;
   font-family: inherit;
@@ -76,14 +84,14 @@
 .form-group select:focus,
 .form-group textarea:focus {
   outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(27, 94, 32, 0.1);
 }
 
 .form-group input:disabled,
 .form-group select:disabled,
 .form-group textarea:disabled {
-  background-color: #f5f5f5;
+  background-color: var(--color-light);
   cursor: not-allowed;
 }
 
@@ -94,7 +102,7 @@
 
 .alert {
   padding: 15px 20px;
-  border-radius: 6px;
+  border-radius: 8px;
   margin-bottom: 20px;
   display: flex;
   align-items: center;
@@ -107,24 +115,24 @@
 }
 
 .alert-error {
-  background-color: #fee;
-  color: #c33;
-  border: 1px solid #fcc;
+  background-color: #ffebee;
+  color: #c62828;
+  border: 1px solid #ef5350;
 }
 
 .alert-success {
-  background-color: #efe;
-  color: #3c763d;
-  border: 1px solid #d6e9c6;
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  border: 1px solid #66bb6a;
 }
 
 .btn-submit {
   width: 100%;
   padding: 15px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
   color: white;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   font-size: 1.1rem;
   font-weight: 600;
   cursor: pointer;
@@ -134,7 +142,7 @@
 
 .btn-submit:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 8px 20px rgba(27, 94, 32, 0.3);
 }
 
 .btn-submit:active:not(:disabled) {
@@ -158,7 +166,7 @@
 }
 
 .confidencial {
-  opacity: 0.8;
+  opacity: 0.9;
   font-style: italic;
 }
 

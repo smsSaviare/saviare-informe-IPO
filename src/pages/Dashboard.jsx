@@ -122,7 +122,10 @@ function Dashboard() {
       {/* Header */}
       <header className="dashboard-header">
         <div>
-          <h1>Dashboard SAVIARE</h1>
+          <h1>
+            <span className="logo-icon">🍀</span>
+            Dashboard SAVIARE
+          </h1>
           <p className="subtitle">Sistema de Gestión de Informes de Peligro Operacional</p>
         </div>
         <button onClick={handleLogout} className="btn-logout">
